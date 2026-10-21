@@ -35,6 +35,21 @@ const closeToast = document.querySelector("#closeToast");
 const liveTicker = document.querySelector("#liveTicker");
 const tickerTrack = document.querySelector("#tickerTrack");
 const liveChat = document.querySelector("#liveChat");
+const chatLauncher = document.querySelector("#chatLauncher");
+const chatClose = document.querySelector("#chatClose");
+let isChatOpen = false;
+
+function setChatOpen(open, restoreFocus = false) {
+  isChatOpen = open;
+  liveChat.classList.toggle("is-hidden", !open);
+  chatLauncher.classList.toggle("is-hidden", open);
+  chatLauncher.setAttribute("aria-expanded", String(open));
+  app.classList.toggle("has-open-chat", open);
+  updateLiveChatTimer(open);
+  if (open) liveChatInput.focus({ preventScroll: true });
+  else if (restoreFocus) chatLauncher.focus({ preventScroll: true });
+}
+
 const liveChatMessages = document.querySelector("#liveChatMessages");
 const liveChatForm = document.querySelector("#liveChatForm");
 const liveChatInput = document.querySelector("#liveChatInput");
@@ -396,9 +411,13 @@ function showScreen(target, options = {}) {
   updateIdStatus(target);
   const shouldShowLiveUi = target !== "auth";
   liveTicker.classList.toggle("is-hidden", !shouldShowLiveUi);
-  liveChat.classList.toggle("is-hidden", !shouldShowLiveUi);
+  if (!shouldShowLiveUi) isChatOpen = false;
+  liveChat.classList.toggle("is-hidden", !shouldShowLiveUi || !isChatOpen);
+  chatLauncher.classList.toggle("is-hidden", !shouldShowLiveUi || isChatOpen);
+  chatLauncher.setAttribute("aria-expanded", String(isChatOpen));
+  app.classList.toggle("has-open-chat", shouldShowLiveUi && isChatOpen);
   app.classList.toggle("has-live-ui", shouldShowLiveUi);
-  updateLiveChatTimer(shouldShowLiveUi);
+  updateLiveChatTimer(shouldShowLiveUi && isChatOpen);
 
   window.scrollTo({ top: 0, behavior: options.instant ? "auto" : "smooth" });
 
@@ -602,7 +621,7 @@ function handleLiveChatSubmit(event) {
 
   autoReplyTimer = window.setTimeout(() => {
     appendLiveMessage(getAutoReply(message));
-    updateLiveChatTimer(true);
+    updateLiveChatTimer(isChatOpen && !liveChat.classList.contains("is-hidden"));
   }, 720);
 }
 
@@ -762,6 +781,11 @@ document.querySelectorAll("[data-demo-action]").forEach((control) => {
 
 copyPromoButton.addEventListener("click", copyPromoCode);
 closeToast.addEventListener("click", hideToast);
+chatLauncher.addEventListener("click", () => setChatOpen(true));
+chatClose.addEventListener("click", () => setChatOpen(false, true));
+liveChat.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") setChatOpen(false, true);
+});
 liveChatForm.addEventListener("submit", handleLiveChatSubmit);
 
 document.addEventListener("keydown", (event) => {

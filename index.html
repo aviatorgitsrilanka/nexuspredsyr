@@ -286,12 +286,15 @@
         </div>
       </div>
 
+      <button class="chat-launcher is-hidden" id="chatLauncher" type="button" aria-controls="liveChat" aria-expanded="false">💬 فتح الدردشة</button>
+
       <section class="live-chat is-hidden" id="liveChat" aria-label="دردشة تلقائية">
         <header class="live-chat-header">
           <div class="live-chat-title">
             <span class="chat-online-dot" aria-hidden="true"></span>
             <strong>تواصل مباشر · تلقائي</strong>
           </div>
+          <button class="chat-close" id="chatClose" type="button" aria-label="إغلاق الدردشة">×</button>
         </header>
         <div class="live-chat-messages" id="liveChatMessages" aria-live="polite"></div>
         <form class="live-chat-form" id="liveChatForm">
