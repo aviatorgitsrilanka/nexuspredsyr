@@ -32,8 +32,6 @@ const toast = document.querySelector("#toast");
 const toastTitle = document.querySelector("#toastTitle");
 const toastMessage = document.querySelector("#toastMessage");
 const closeToast = document.querySelector("#closeToast");
-const liveTicker = document.querySelector("#liveTicker");
-const tickerTrack = document.querySelector("#tickerTrack");
 const liveChat = document.querySelector("#liveChat");
 const chatLauncher = document.querySelector("#chatLauncher");
 const chatClose = document.querySelector("#chatClose");
@@ -59,28 +57,6 @@ const PROMO_CODE = "SYA333";
 const STORAGE_KEY = "nexuspredsyr-interface-state";
 const ACCESS_KEY = "nexuspredsyr-access-granted";
 const VALID_SCREENS = new Set(["programs", "dashboard", "id", "result"]);
-const tickerEvents = [
-  "محمد — ID 18476235453 +250 USD",
-  "عيسى — ID 18458373641 +120 USD",
-  "أحمد — ID 18490627138 +95 USD",
-  "عمر — ID 18431590762 +310 USD",
-  "خالد — ID 18472816405 +180 USD",
-  "يوسف — ID 18421343243 +145 USD",
-  "محمود — ID 18463057291 +220 USD",
-  "مصطفى — ID 18485731460 +85 USD",
-  "حسن — ID 18449268137 +275 USD",
-  "حسين — ID 18410483652 +160 USD",
-  "علي — ID 18476391024 +340 USD",
-  "إبراهيم — ID 18452940716 +110 USD",
-  "عبدالله — ID 18468025193 +205 USD",
-  "سامي — ID 18439176820 +130 USD",
-  "رامي — ID 18497532064 +290 USD",
-  "ياسر — ID 18424680931 +75 USD",
-  "فارس — ID 18481356247 +260 USD",
-  "نور — ID 18456719082 +150 USD",
-  "باسل — ID 18432847519 +195 USD",
-  "مازن — ID 18474192630 +320 USD",
-];
 const simulatedChatMessages = [
   {
     sender: "user",
@@ -410,7 +386,6 @@ function showScreen(target, options = {}) {
 
   updateIdStatus(target);
   const shouldShowLiveUi = target !== "auth";
-  liveTicker.classList.toggle("is-hidden", !shouldShowLiveUi);
   if (!shouldShowLiveUi) isChatOpen = false;
   liveChat.classList.toggle("is-hidden", !shouldShowLiveUi || !isChatOpen);
   chatLauncher.classList.toggle("is-hidden", !shouldShowLiveUi || isChatOpen);
@@ -476,37 +451,6 @@ function showToast(message, title = "NEXUS") {
 function hideToast() {
   toast.classList.remove("is-visible");
   toast.setAttribute("aria-hidden", "true");
-}
-
-function buildTicker() {
-  const fragment = document.createDocumentFragment();
-
-  for (let copy = 0; copy < 3; copy += 1) {
-    const group = document.createElement("span");
-    group.className = "ticker-group";
-    if (copy === 1) group.setAttribute("aria-hidden", "true");
-
-    tickerEvents.forEach((eventText, index) => {
-      const event = document.createElement("span");
-      event.textContent = eventText;
-      group.appendChild(event);
-
-      if (index < tickerEvents.length - 1) {
-        const separator = document.createElement("i");
-        separator.textContent = "◈";
-        separator.setAttribute("aria-hidden", "true");
-        group.appendChild(separator);
-      }
-    });
-
-    const trailingSeparator = document.createElement("i");
-    trailingSeparator.textContent = "◈";
-    trailingSeparator.setAttribute("aria-hidden", "true");
-    group.appendChild(trailingSeparator);
-    fragment.appendChild(group);
-  }
-
-  tickerTrack.replaceChildren(fragment);
 }
 
 function appendLiveMessage(message) {
@@ -794,7 +738,6 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-buildTicker();
 initializeLiveChat();
 makeStars();
 window.setTimeout(finishBoot, 1180);
